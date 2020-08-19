@@ -16,13 +16,14 @@ import com.brunopique.assignment8.domain.Recipe;
 public class RecipeService {
 
 	public List<Recipe> getRecipes() {
-		List<Recipe> recipes = new ArrayList<>();
 		
-		Reader in;
-		Iterable<CSVRecord> records = null;;
+		List<Recipe> recipes = new ArrayList<>();
+		Reader fileReader = null;
+		Iterable<CSVRecord> records = null;
+		
 		try {
-			in = new FileReader("recipes.txt");
-			records = CSVFormat.DEFAULT.withIgnoreSurroundingSpaces().withHeader().parse(in);
+			fileReader = new FileReader("recipes.txt");
+			records = CSVFormat.DEFAULT.withIgnoreSurroundingSpaces().withHeader().parse(fileReader);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -44,6 +45,15 @@ public class RecipeService {
 		    recipes.add(new Recipe(cookingMinutes, dairyFree, glutenFree, instructions, 
 		    		preparationMinutes, pricePerServing, readyInMinutes, servings, spoonacularScore, title, vegan, vegetarian));
 		}
+		
+		if (fileReader != null) {
+			try {
+				fileReader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		return recipes;
 	}	
 }
