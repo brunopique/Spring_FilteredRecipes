@@ -19,16 +19,17 @@ public class RecipeController {
 	
 	@GetMapping("/gluten-free")
 	public String getGlutenFreeRecipes() {
-		Map<Integer, List<Recipe>> recipesGfree = recipeService.getRecipes().stream()
-															   .filter(recipe -> recipe.getGlutenFree().equals(Boolean.TRUE))
-															   .collect(Collectors.groupingBy(Recipe::getCookingMinutes));
-		return recipesGfree.toString();
+		Map<Integer, List<Recipe>> recipesGlutenFree = recipeService.getRecipes().stream()
+																	// check Boolean against var, no the other way around, to avoid null pointer
+																   .filter(recipe -> Boolean.TRUE.equals(recipe.getGlutenFree()))
+																   .collect(Collectors.groupingBy(Recipe::getCookingMinutes));
+		return recipesGlutenFree.toString();
 	}
 
 	@GetMapping("/vegan")
 	public String getVeganRecipes() {
 		Map<Integer, List<Recipe>> recipesVegan = recipeService.getRecipes().stream()
-															   .filter(recipe -> recipe.getVegan().equals(Boolean.TRUE))
+															   .filter(recipe -> Boolean.TRUE.equals(recipe.getVegan()))
 															   .collect(Collectors.groupingBy(Recipe::getCookingMinutes));
 		return recipesVegan.toString();
 	}
@@ -36,16 +37,16 @@ public class RecipeController {
 
 	@GetMapping("/vegan-and-gluten-free")
 	public String getGlutenFreeAndVeganRecipes() {
-		Map<Integer, List<Recipe>> recipesGfreeVegan = recipeService.getRecipes().stream()
-																	.filter(recipe -> recipe.getGlutenFree().equals(Boolean.TRUE) && recipe.getVegan().equals(Boolean.TRUE))
+		Map<Integer, List<Recipe>> recipesGlutenFreeVegan = recipeService.getRecipes().stream()
+																	.filter(recipe -> Boolean.TRUE.equals(recipe.getGlutenFree()) && Boolean.TRUE.equals(recipe.getVegan()))
 																	.collect(Collectors.groupingBy(Recipe::getCookingMinutes));
-		return recipesGfreeVegan.toString();
+		return recipesGlutenFreeVegan.toString();
 	}
 
 	@GetMapping("/vegetarian")
 	public String getVegetarianRecipes() {
 		Map<Integer, List<Recipe>> recipesVegetarian = recipeService.getRecipes().stream()
-																	.filter(recipe -> recipe.getVegetarian().equals(Boolean.TRUE))
+																	.filter(recipe -> Boolean.TRUE.equals(recipe.getVegetarian()))
 																	.collect(Collectors.groupingBy(Recipe::getCookingMinutes));
 		return recipesVegetarian.toString();
 	}

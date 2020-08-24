@@ -18,40 +18,32 @@ public class RecipeService {
 	public List<Recipe> getRecipes() {
 		
 		List<Recipe> recipes = new ArrayList<>();
-		Reader fileReader = null;
 		Iterable<CSVRecord> records = null;
 		
-		try {
-			fileReader = new FileReader("recipes.txt");
+		// try with resources uses a 'Finally' block behind the scenes to close the reader
+		try (Reader fileReader = new FileReader("recipes.txt")){
+			
 			records = CSVFormat.DEFAULT.withIgnoreSurroundingSpaces().withHeader().parse(fileReader);
+			
+			for (CSVRecord record : records) {
+				Integer cookingMinutes = Integer.parseInt(record.get("Cooking Minutes"));
+				Boolean dairyFree = Boolean.parseBoolean(record.get("Dairy Free"));
+				Boolean glutenFree = Boolean.parseBoolean(record.get("Gluten Free"));
+				String instructions = record.get("Instructions");
+				Double preparationMinutes = Double.valueOf(record.get("Preparation Minutes"));
+				Double pricePerServing = Double.valueOf(record.get("Price Per Serving"));
+				Integer readyInMinutes = Integer.parseInt(record.get("Ready In Minutes"));
+				Integer servings = Integer.parseInt(record.get("Servings"));
+				Double spoonacularScore = Double.valueOf(record.get("Spoonacular Score"));
+				String title = record.get("Title");
+				Boolean vegan = Boolean.parseBoolean(record.get("Vegan"));
+				Boolean vegetarian = Boolean.parseBoolean(record.get("Vegetarian"));
+				
+				recipes.add(new Recipe(cookingMinutes, dairyFree, glutenFree, instructions, 
+						preparationMinutes, pricePerServing, readyInMinutes, servings, spoonacularScore, title, vegan, vegetarian));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		
-		for (CSVRecord record : records) {
-		    Integer cookingMinutes = Integer.parseInt(record.get("Cooking Minutes"));
-		    Boolean dairyFree = Boolean.parseBoolean(record.get("Dairy Free"));
-		    Boolean glutenFree = Boolean.parseBoolean(record.get("Gluten Free"));
-		    String instructions = record.get("Instructions");
-			Double preparationMinutes = Double.valueOf(record.get("Preparation Minutes"));
-			Double pricePerServing = Double.valueOf(record.get("Price Per Serving"));
-		    Integer readyInMinutes = Integer.parseInt(record.get("Ready In Minutes"));
-		    Integer servings = Integer.parseInt(record.get("Servings"));
-		    Double spoonacularScore = Double.valueOf(record.get("Spoonacular Score"));
-		    String title = record.get("Title");
-		    Boolean vegan = Boolean.parseBoolean(record.get("Vegan"));
-		    Boolean vegetarian = Boolean.parseBoolean(record.get("Vegetarian"));
-		    
-		    recipes.add(new Recipe(cookingMinutes, dairyFree, glutenFree, instructions, 
-		    		preparationMinutes, pricePerServing, readyInMinutes, servings, spoonacularScore, title, vegan, vegetarian));
-		}
-		
-		if (fileReader != null) {
-			try {
-				fileReader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 
 		return recipes;
